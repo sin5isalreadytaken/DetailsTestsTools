@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="product_set">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element maxOccurs="unbounded" minOccurs="1" name="product" type="ProductType"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <!--商品信息-->
+  <xsd:complexType name="ProductType">
+    <xsd:sequence>
+      <!--商品ID:商品的唯一标识符，为每件商品使用不重复的专用值，更新数据时确保此ID不变。只能使用数字、字母或数字与字母的组合，不可使用任何符号。-->
+      <xsd:element name="product_id">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--商品名称:可用于展示在广告创意上的商品名称。-->
+      <xsd:element name="product_name">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--商品下架时间:用于控制商品推广时间。在此时间之后，该商品将不会被推广。-->
+      <xsd:element name="expiration_time">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--商品创建时间:是指广告主在商品库中创建该商品的时间。请尽量正确填写此字段，若不填，将有可能导致商品入库时间延迟。-->
+      <xsd:element minOccurs="0" name="created_time">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--商品更新时间:是指广告主上一次更新该商品信息的时间。请尽量正确填写此字段，若不填，将有可能导致商品入库时间延迟。-->
+      <xsd:element minOccurs="0" name="lastmod_time">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--商品图片URL:只支持JPG, JPEG, GIF和PNG格式，以http开头。由于商品图片可能会展示在创意中，为了获得更佳视觉效果，请确保所有商品的图片具备相同的宽高比，并且尽量使宽高比接近1:1（正方形）。图片需能够准确展示商品，不能为纯色图片，且不能只展示纯文字。请勿提交超过 6400 万像素的图片或大于16MB的文件。为确保图片清晰、吸引更多用户，请尽量提供像素数量较高的图片。只能填写一个url.-->
+      <xsd:element minOccurs="0" name="image_url">
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="UrlType_HTTP_AND_HTTPS">
+              <xsd:attribute name="width" type="xsd:positiveInteger" use="optional"/>
+              <xsd:attribute name="height" type="xsd:positiveInteger" use="optional"/>
+              <xsd:attribute name="fileSize" type="xsd:positiveInteger" use="optional"/>
+              <xsd:attribute name="fileMd5" type="xsd:string" use="optional"/>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <!--额外的商品图片URL:此字段内至多支持10个图片url，通过重复编写此字段的方式实现。其余要求同（image_url）字段。注意，为了正确制作创意模板，请牢记各个additional_image_url的顺序，从第一个additional_image_url到第十个，在模板制作系统中依次对应additional_image_url_1到additional_image_url_10.-->
+      <xsd:element maxOccurs="10" minOccurs="0" name="additional_image_url">
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="UrlType_HTTP_AND_HTTPS">
+              <xsd:attribute name="width" type="xsd:positiveInteger" use="optional"/>
+              <xsd:attribute name="height" type="xsd:positiveInteger" use="optional"/>
+              <xsd:attribute name="fileSize" type="xsd:positiveInteger" use="optional"/>
+              <xsd:attribute name="fileMd5" type="xsd:string" use="optional"/>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <!--PC端落地页:以 http 或 https 开头，使用经过编码且符合 RFC 2396 或 RFC 1738 规范的网址。例如，英文逗号表示为“%2C”。以下5个字段：target_url_pc、target_url_mobile、target_url_android、target_url_ios、target_url_wechat，至少要填写一个，否则广告无法播放。-->
+      <xsd:element minOccurs="0" name="target_url_pc" type="UrlType_HTTP_AND_HTTPS"/>
+      <!--移动M站落地页:以 http 或 https 开头，使用经过编码且符合 RFC 2396 或 RFC 1738 规范的网址。例如，英文逗号表示为“%2C”。以下5个字段：target_url_pc、target_url_mobile、target_url_android、target_url_ios、target_url_wechat，至少要填写一个，否则广告无法播放。-->
+      <xsd:element minOccurs="0" name="target_url_mobile" type="UrlType_HTTP_AND_HTTPS"/>
+      <!--Android应用直达落地页:以下5个字段：target_url_pc、target_url_mobile、target_url_android、target_url_ios、target_url_wechat，至少要填写一个，否则广告无法播放。-->
+      <xsd:element minOccurs="0" name="target_url_android" type="UrlType_ANY"/>
+      <!--iOS应用直达落地页:以下5个字段：target_url_pc、target_url_mobile、target_url_android、target_url_ios、targ  et_url_wechat，至少要填写一个，否则广告无法播放。-->
+      <xsd:element minOccurs="0" name="target_url_ios" type="UrlType_ANY"/>
+      <!--微信落地页:以下5个字段：target_url_pc、target_url_mobile、target_url_android、target_url_ios、target_url_wechat，至少要填写一个，否则广告无法播放。-->
+      <xsd:element minOccurs="0" name="target_url_wechat" type="UrlType_ANY"/>
+      <!--商品描述:对商品进行描述，可用于优化推荐。-->
+      <xsd:element minOccurs="0" name="description">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="5000"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--商品日常售价:指商品日常实际售价，一般会略低于商品标签价original_price（与“官方定价”、“市面价”、“柜台价”等同意），而略高于特价促销期间的售价。单位是RMB元。-->
+      <xsd:element minOccurs="0" name="price">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:decimal">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--商品原售价:指商品的原价、标签价格、官方定价、市面价、柜台价等，一般高于商品日常售价。单位是RMB元。-->
+      <xsd:element minOccurs="0" name="original_price">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:decimal">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--商品折扣:商品折扣，请以小数形式表达，如72折，请写成0.72。注意小数点后只能保留2位数字。-->
+      <xsd:element minOccurs="0" name="discount">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:float">
+            <xsd:minInclusive value="0.0"/>
+            <xsd:maxInclusive value="1.0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--商品促销价:商品在促销期间（如春节促销、店庆促销等）的售价，一般低于商品日常售价。-->
+      <xsd:element minOccurs="0" name="sale_price">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:decimal">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--促销价开始时间:配合sale_price使用。-->
+      <xsd:element minOccurs="0" name="sale_price_start_time">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--促销价结束时间:配合sale_price使用。-->
+      <xsd:element minOccurs="0" name="sale_price_end_time">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--商品在PC网站上的售价:null-->
+      <xsd:element minOccurs="0" name="price_pc">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:decimal">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--商品在移动端网站上的售价:null-->
+      <xsd:element minOccurs="0" name="price_mobile">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:decimal">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--商品在移动app上的售价:null-->
+      <xsd:element minOccurs="0" name="price_app">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:decimal">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--已售卖数:null-->
+      <xsd:element minOccurs="0" name="sales_volume">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--库存数:当stock_vomlume为0时，商品将不会出现在广告中，可以使用stock_volume来控制商品是否被推广。-->
+      <xsd:element minOccurs="0" name="stock_volume">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--广告语:用于推广商品或店铺、商户的广告语，可以展示在广告创意中。注意：slogan字数不宜过多，需要与创意模板的空间布局相适应，否则会引起广告展示出错，严重影响广告效果。-->
+      <xsd:element minOccurs="0" name="slogan">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--商品自定义信息:广告主自定义的信息，可以填写多项自定义属性，属性名称和属性值之前用英文冒号做分隔符，前一个属性和后一个属性之间用英文分号;做分隔符。自定义属性的名称只能用英文，属性值可用中文。例如：size:大号;users:中青年群体;color:灰色系;-->
+      <xsd:element minOccurs="0" name="custom_data">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="5000"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--自定义标签:自定义标签可以帮助广告主来筛选商品。此字段内至多支持5个不同的自定义标签，通过重复编写此字段的方式实现。例如A商品有一个标签“优质”，那么在投广告时您可以筛选出带有“优质”标签的全部商品。-->
+      <xsd:element maxOccurs="5" minOccurs="0" name="custom_label">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--一级分类ID:null-->
+      <xsd:element minOccurs="0" name="first_category_id">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--二级分类ID:null-->
+      <xsd:element minOccurs="0" name="second_category_id">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--三级分类ID:null-->
+      <xsd:element minOccurs="0" name="third_category_id">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--四级分类ID:null-->
+      <xsd:element minOccurs="0" name="fourth_category_id">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--一级分类名称:null-->
+      <xsd:element minOccurs="0" name="first_category_name">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--二级分类名称:null-->
+      <xsd:element minOccurs="0" name="second_category_name">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--三级分类名称:null-->
+      <xsd:element minOccurs="0" name="third_category_name">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--四级分类名称:null-->
+      <xsd:element minOccurs="0" name="fourth_category_name">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--一级分类URL:null-->
+      <xsd:element minOccurs="0" name="first_category_url" type="UrlType_HTTP_AND_HTTPS"/>
+      <!--二级分类URL:null-->
+      <xsd:element minOccurs="0" name="second_category_url" type="UrlType_HTTP_AND_HTTPS"/>
+      <!--三级分类URL:null-->
+      <xsd:element minOccurs="0" name="third_category_url" type="UrlType_HTTP_AND_HTTPS"/>
+      <!--四级分类URL:null-->
+      <xsd:element minOccurs="0" name="fourth_category_url" type="UrlType_HTTP_AND_HTTPS"/>
+      <!--品牌ID:null-->
+      <xsd:element minOccurs="0" name="brand_id">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--品牌名称:null-->
+      <xsd:element minOccurs="0" name="brand_name">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--品牌页URL:null-->
+      <xsd:element minOccurs="0" name="brand_url" type="UrlType_HTTP_AND_HTTPS"/>
+      <!--活动档期ID:活动档期是指促销、优惠、满减等各种商家的活动形式。-->
+      <xsd:element minOccurs="0" name="promotion_id">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--活动档期名称:活动档期是指促销、优惠、满减等各种商家的活动形式。-->
+      <xsd:element minOccurs="0" name="promotion_name">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--活动档期URL地址:活动档期是指促销、优惠、满减等各种商家的活动形式。-->
+      <xsd:element minOccurs="0" name="promotion_url" type="UrlType_HTTP_AND_HTTPS"/>
+      <!--店铺ID:null-->
+      <xsd:element minOccurs="0" name="shop_id">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--店铺名称:null-->
+      <xsd:element minOccurs="0" name="shop_name">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--店铺URL:null-->
+      <xsd:element minOccurs="0" name="shop_url" type="UrlType_HTTP_AND_HTTPS"/>
+      <!--店铺自定义信息:店铺的自定义的信息，用于替代旧版本中的shop_attribute字段。可以填写多项自定义属性，属性名称和属性值之前用英文冒号做分隔符，前一个属性和后一个属性之间用英文分号;做分隔符。自定义属性的名称只能用英文，属性值可用中文。例如：type:旗舰店;relationship:签约门店;-->
+      <xsd:element minOccurs="0" name="shop_custom_data">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="5000"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--商品详情页打开次数:null-->
+      <xsd:element minOccurs="0" name="product_view_count">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--收藏用户数:null-->
+      <xsd:element minOccurs="0" name="favorite_count">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--评分:null-->
+      <xsd:element minOccurs="0" name="ratings">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:float">
+            <xsd:minInclusive value="0.0"/>
+            <xsd:maxInclusive value="5.0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <!--好评率:指商品获得好评的比例，请使用浮点数表示，小数点后保留两位小数，例如78%请写成0.78即可。-->
+      <xsd:element minOccurs="0" name="favourable_comment_rate">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:float">
+            <xsd:minInclusive value="0.0"/>
+            <xsd:maxInclusive value="1.0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--基础数据类型-->
+  <xsd:simpleType name="UrlType_HTTP_ONLY">
+    <xsd:restriction base="xsd:anyURI">
+      <xsd:maxLength value="1000"/>
+      <xsd:pattern value="http://.+"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="UrlType_HTTP_AND_HTTPS">
+    <xsd:restriction base="xsd:anyURI">
+      <xsd:maxLength value="1000"/>
+      <xsd:pattern value="https?://.+"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="UrlType_ANY">
+    <xsd:restriction base="xsd:anyURI">
+      <xsd:maxLength value="1000"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>

@@ -1,0 +1,18 @@
+server:
+  port: 10071
+
+spring:
+  datasource:
+    primary:
+      url: jdbc:mysql://10.13.85.181:3306/NR?useUnicode=true&characterEncoding=UTF-8
+      username: root
+      password: 7bb98050796b649e
+      driver-class-name: com.mysql.jdbc.Driver
+
+#spring:
+#  datasource:
+#    secondary:
+#      url: jdbc:mysql://10.13.85.168:3306/market-test?useUnicode=true&characterEncoding=UTF-8
+#      username: developer
+#      password: 123456
+#      driver-class-name: com.mysql.jdbc.Driver
